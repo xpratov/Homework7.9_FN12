@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 // Kerakli kutubxona va componentlarni import qilib olamiz
 import { Link } from 'react-router-dom'
 import { styled } from 'styled-components'
 import StyledHeadingComp from '../components/StyledHeading'
 import StyledButton from '../components/StyledButton'
+
 
 // Ushbu sahifada chiziladigan componentlarga stil beramiz
 const StyledCategoryPick=styled.div`
@@ -25,6 +26,21 @@ const StyledCategories=styled.div`
     gap: 16px;
 `
 const CategoryPick = () => {
+    const [data, setData]=useState([])
+    async function fetchData() {
+    try {
+      const response = await fetch('./data.json'); 
+      const data = await response.json();
+      setData(data)
+      console.log(data.categories);
+    } catch (error) {
+      console.error('Xatolik yuz berdi:', error);
+    }
+  }
+  useEffect(() => {
+    fetchData()
+  },[]);
+  
   return (
     <StyledCategoryPick>
         <StyledHero>
@@ -37,12 +53,9 @@ const CategoryPick = () => {
         </StyledHero>
         <StyledCategories>
             {/* Buttonlarni sahifaga joylashtiramiz */}
-            <StyledButton>MOVIES</StyledButton>
-            <StyledButton>TV SHOWS</StyledButton>
-            <StyledButton>COUNTRIES</StyledButton>
-            <StyledButton>CAPITAL CITIES</StyledButton>
-            <StyledButton>ANIMALS</StyledButton>
-            <StyledButton>SPORTS</StyledButton>
+            {data?Object.entries(data.categories).map(el=>(
+                <StyledButton>{el}</StyledButton>
+            )): "..."}
         </StyledCategories>
     </StyledCategoryPick>
   )
